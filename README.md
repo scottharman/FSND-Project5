@@ -79,6 +79,8 @@ Install packages with apt-get apache2 libapache2-mod-wsgi postgresql git python-
 
 ## Create Catalog postgres user
 To bypass an issue with peer authentication, I've added a password protected catalog user, and allowed this to access the database over localhost.
+I've specified that the user should connect to localhost, using a password 'i3hu3an'
+I've loaded the default catalog database as the catalog database user.
 
 ## Install Python modules
 
@@ -110,27 +112,32 @@ git clone https://github.com/scottharman/Udacity-FSND-VM-Vagrant.git
 ## Configure Apache2 to server wsgi apps
 Edit /etc/apache2/sites-enabled/000-default.conf
 The file should contain the following to allow you to serve the app and static folders
-        WSGIDaemonProcess catalog user=www-data group=www-data
-        WSGIScriptAlias / /var/www/catalog/catalog.wsgi
 
-        <Directory /var/www/catalog>
-                WSGIProcessGroup catalog
-                WSGIApplicationGroup %{GLOBAL}
-                #Order deny,allow
-                #Allow from all
-                Options All
-                AllowOverride All
-                Require all granted
-        </Directory>
-        Alias /static /home/grader/Udacity-FSND-VM-Vagrant/vagrant/catalog/app/static/
-        <Directory /home/grader/Udacity-FSND-VM-Vagrant/vagrant/catalog/app/static>
-                #Order allow,deny
-                #Allow from all
-                Options All
-                AllowOverride All
-                Require all granted
-        </Directory>
-    </VirtualHost>
+    # Set the daemon process username and group names for the app, catalog
+    WSGIDaemonProcess catalog user=www-data group=www-data
+    # Set the scriptalias for the root location to the catalog app
+    WSGIScriptAlias / /var/www/catalog/catalog.wsgi
+    # define the catalog location, I've placed this under /var/www by convention, but the wsgi script calls the app under the grader home dir.
+    <Directory /var/www/catalog>
+            WSGIProcessGroup catalog
+            WSGIApplicationGroup %{GLOBAL}
+            #Order deny,allow
+            #Allow from all
+            # Modern apache notation
+            Options All
+            AllowOverride All
+            Require all granted
+    </Directory>
+    #Explicitly set static alias.
+    Alias /static /home/grader/Udacity-FSND-VM-Vagrant/vagrant/catalog/app/static/
+    <Directory /home/grader/Udacity-FSND-VM-Vagrant/vagrant/catalog/app/static>
+            #Order allow,deny
+            #Allow from all
+            Options All
+            AllowOverride All
+            Require all granted
+    </Directory>
+
 
 
 This will allow you to serve the catalog app from whereever you have defined it
