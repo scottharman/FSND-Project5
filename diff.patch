@@ -1,0 +1,71 @@
+diff --git a/vagrant/catalog/app/__init__.py b/vagrant/catalog/app/__init__.py
+index 0d8632f..e2dc26e 100644
+--- a/vagrant/catalog/app/__init__.py
++++ b/vagrant/catalog/app/__init__.py
+@@ -9,4 +9,4 @@ app = Flask(__name__)
+ app.config.from_pyfile('config.cfg')
+ 
+ 
+-from app import forms, models, views  # noqa
++from app import views, models, access   # noqa
+diff --git a/vagrant/catalog/app/config.cfg b/vagrant/catalog/app/config.cfg
+index c650110..ca7f0fe 100644
+--- a/vagrant/catalog/app/config.cfg
++++ b/vagrant/catalog/app/config.cfg
+@@ -1,6 +1,6 @@
+ CSRF_ENABLED = True
+ SECRET_KEY = 'you-will-never-guess'
+-SQLALCHEMY_DATABASE_URI = 'postgresql+psycopg2://vagrant@/catalog'
++SQLALCHEMY_DATABASE_URI = 'postgresql+psycopg2://catalog@/catalog'
+ # Disable debug
+ DEBUG = True
+ PIN_SECURITY = False
+diff --git a/vagrant/catalog/app/models.py b/vagrant/catalog/app/models.py
+index 9024c2b..e531323 100644
+--- a/vagrant/catalog/app/models.py
++++ b/vagrant/catalog/app/models.py
+@@ -97,5 +97,5 @@ class User(Base):
+         return check_password_hash(self.password, password)
+ 
+ 
+-engine = create_engine("postgresql+psycopg2://vagrant@/catalog")
++engine = create_engine("postgresql+psycopg2://catalog:i3hu3an@127.0.0.1/catalog")
+ Base.metadata.create_all(engine)
+diff --git a/vagrant/catalog/app/views.py b/vagrant/catalog/app/views.py
+index 7b2ac4d..654e261 100644
+--- a/vagrant/catalog/app/views.py
++++ b/vagrant/catalog/app/views.py
+@@ -1,4 +1,4 @@
+-from app import app, access, models
++from app import app, access
+ from flask import Flask, render_template, request, redirect, jsonify, url_for
+ from flask import flash, make_response
+ from werkzeug.contrib.atom import AtomFeed
+@@ -21,9 +21,9 @@ from functools import wraps
+ csrf = SeaSurf(app)
+ 
+ CLIENT_ID = json.loads(
+-    open('client_secrets.json', 'r').read())['web']['client_id']
++    open('/home/grader/Udacity-FSND-VM-Vagrant/vagrant/catalog/app/client_secrets.json', 'r').read())['web']['client_id']
+ APPLICATION_NAME = "Udacity Catalog Project"
+-UPLOAD_FOLDER = '/vagrant/catalog/app/static/uploads'
++UPLOAD_FOLDER = '/home/grader/Udacity-FSND-VM-Vagrant/vagrant/catalog/app/static/uploads'
+ ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg', 'gif', 'JPG'])
+ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+ app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
+@@ -313,7 +313,7 @@ def gconnect():
+ 
+     try:
+         # Upgrade the authorization code into a credentials object
+-        oauth_flow = flow_from_clientsecrets('client_secrets.json', scope='')
++        oauth_flow = flow_from_clientsecrets('/home/grader/Udacity-FSND-VM-Vagrant/vagrant/catalog/app/client_secrets.json', scope='')
+         oauth_flow.redirect_uri = 'postmessage'
+         credentials = oauth_flow.step2_exchange(code)
+     except FlowExchangeError:
+diff --git a/vagrant/catalog/client_secrets.json b/vagrant/catalog/client_secrets.json
+deleted file mode 100644
+index 8b84819..0000000
+--- a/vagrant/catalog/client_secrets.json
++++ /dev/null
+@@ -1 +0,0 @@
+-{"web":{"client_id":"147337389306-dnjgekecsjau9h727jtvdds4jkdjui7p.apps.googleusercontent.com","project_id":"udacity-catalog-project","auth_uri":"https://accounts.google.com/o/oauth2/auth","token_uri":"https://accounts.google.com/o/oauth2/token","auth_provider_x509_cert_url":"https://www.googleapis.com/oauth2/v1/certs","client_secret":"-jfv3hrJIo_9qfV-NXFAcbvs","redirect_uris":["http://localhost:5000/gconnect","http://localhost:5000/login"],"javascript_origins":["http://localhost:5000","http://127.0.0.1:5000"]}}

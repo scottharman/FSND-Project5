@@ -155,6 +155,11 @@ Changes were made in a couple of different areas:
 1. Change the path of client_secrets.json for client_id
 2. Change the path of client_secrets.json for oauth flow (would not pull from the catalog folder, only the app folder)
 3. Explicitly set the path of the upload folder to '/home/grader/Udacity-FSND-VM-Vagrant/vagrant/catalog/app/static/uploads'
+4. Alter the database path to use the database catalog user, rather than the vagrant user.
+
+## Additional software
+Rate limiting connections is potentially not enough, and attackers may also target the app itself, so have added Fail2Ban to block repeated attempts to login.
+Have also added glances for server monitoring, it would have been nice to have glances running as a wsgi app inside Apache, but can only be run via Bottle
 
 ### Developer Console
 Logged into Developer console - added new Origin as:
@@ -162,3 +167,10 @@ http://ec2-52-36-104-250.us-west-2.compute.amazonaws.com/
 Added new redirect URLs
 http://ec2-52-36-104-250.us-west-2.compute.amazonaws.com/gconnect
 http://ec2-52-36-104-250.us-west-2.compute.amazonaws.com/login
+
+## Access server
+Catalog application server is accessible at:
+http://ec2-52-36-104-250.us-west-2.compute.amazonaws.com/
+
+SSH is available on 52.36.104.250 port 2200
+Username is grader, and both the password and private key have been supplied with the submission.
