@@ -138,7 +138,8 @@ The file should contain the following to allow you to serve the app and static f
             Require all granted
     </Directory>
 
-
+Alter ServerName directive to only respond on the fqdn not IP.
+    ServerName ec2-52-36-104-250.us-west-2.compute.amazonaws.com
 
 This will allow you to serve the catalog app from whereever you have defined it
 
